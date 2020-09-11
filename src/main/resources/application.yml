@@ -1,0 +1,33 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: pub
+          uri: lb://pub
+          predicates:
+            - Path=/pub/**
+          filters:
+            - RewritePath=/pub/(?<path>.*), /$\{path}
+        - id: warehouse
+          uri: lb://warehouse
+          predicates:
+            - Path=/warehouse/**
+          filters:
+            - RewritePath=/warehouse/(?<path>.*), /$\{path}
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+  application:
+    name: gateway
+server:
+  port: 8501
+eureka:
+  client:
+    register-with-eureka: false
